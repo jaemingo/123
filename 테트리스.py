@@ -5,19 +5,19 @@ import time
 import pygame
 from pygame.locals import *
 
-FPS = 60
-WINDOWWIDTH = 640  # 창 크기
-WINDOWHEIGHT = 480  # 높이
-BOXSIZE = 20  # 게임 박스 크기
-BOARDWIDTH = 10  # 가로
-BOARDHEIGHT = 20  # 세로
-BLANK = '.'
+FPS = 5000
+상자크기 = 640
+높이 = 480
+게임상자 = 20
+게임상자가로 = 10
+게임상자세로 = 20
+BLANK = 'ㅋ'
 
-MOVESIDEWAYSFREQ = 0.2  # 속도
-MOVEDOWNFREQ = 0.1  # 내려오는 속도
+MOVESIDEWAYSFREQ = 5
+MOVEDOWNFREQ = 2
 
-XMARGIN = int((WINDOWWIDTH - BOARDWIDTH * BOXSIZE) / 2)
-TOPMARGIN = WINDOWHEIGHT - (BOARDHEIGHT * BOXSIZE) - 5
+XMARGIN = int((상자크기 - 게임상자가로 * 게임상자) / 2)
+TOPMARGIN = 높이 - (게임상자세로 * 게임상자) - 5
 
 #        (빨강 ,초록, 파랑)
 WHITE = (255, 255, 255)
@@ -32,118 +32,117 @@ LIGHTBLUE = (20, 20, 175)
 YELLOW = (155, 155, 0)
 LIGHTYELLOW = (175, 175, 20)
 
-BORDERCOLOR = BLUE
-BGCOLOR = BLACK
+BORDERCOLOR = LIGHTBLUE
+BGCOLOR = WHITE
 TEXTCOLOR = WHITE
 TEXTSHADOWCOLOR = GRAY
 COLORS = (BLUE, GREEN, RED, YELLOW)
 LIGHTCOLORS = (LIGHTBLUE, LIGHTGREEN, LIGHTRED, LIGHTYELLOW)
-assert len(COLORS) == len(LIGHTCOLORS)
 
 TEMPLATEWIDTH = 5
 TEMPLATEHEIGHT = 5
 
-S_SHAPE_TEMPLATE = [['.....',
-                     '.....',
-                     '..OO.',
-                     '.OO..',
-                     '.....'],
-                    ['.....',
-                     '..O..',
-                     '..OO.',
-                     '...O.',
-                     '.....']]
+S_SHAPE_TEMPLATE = [['ㅋㅋㅋㅋㅋ',
+                     'ㅋㅋㅋㅋㅋ',
+                     'ㅋㅋOOㅋ',
+                     'ㅋOOㅋㅋ',
+                     'ㅋㅋㅋㅋㅋ'],
+                    ['ㅋㅋㅋㅋㅋ',
+                     'ㅋㅋOㅋㅋ',
+                     'ㅋㅋOOㅋ',
+                     'ㅋㅋㅋOㅋ',
+                     'ㅋㅋㅋㅋㅋ']]
 
-Z_SHAPE_TEMPLATE = [['.....',
-                     '.....',
-                     '.OO..',
-                     '..OO.',
-                     '.....'],
-                    ['.....',
-                     '..O..',
-                     '.OO..',
-                     '.O...',
-                     '.....']]
+Z_SHAPE_TEMPLATE = [['ㅋㅋㅋㅋㅋ',
+                     'ㅋㅋㅋㅋㅋ',
+                     'ㅋOOㅋㅋ',
+                     'ㅋㅋ00ㅋ',
+                     'ㅋㅋㅋㅋㅋ'],
+                    ['ㅋㅋㅋㅋㅋ',
+                     'ㅋㅋ0ㅋㅋ',
+                     'ㅋ00ㅋㅋ',
+                     'ㅋ0ㅋㅋㅋ',
+                     'ㅋㅋㅋㅋㅋ']]
 
-I_SHAPE_TEMPLATE = [['..O..',
-                     '..O..',
-                     '..O..',
-                     '..O..',
-                     '.....'],
-                    ['.....',
-                     '.....',
-                     'OOOO.',
-                     '.....',
-                     '.....']]
+I_SHAPE_TEMPLATE = [['ㅋㅋ0ㅋㅋ',
+                     'ㅋㅋ0ㅋㅋ',
+                     'ㅋㅋ0ㅋㅋ',
+                     'ㅋㅋ0ㅋㅋ',
+                     'ㅋㅋㅋㅋㅋ'],
+                    ['ㅋㅋㅋㅋㅋ',
+                     'ㅋㅋㅋㅋㅋ',
+                     '0000ㅋ',
+                     'ㅋㅋㅋㅋㅋ',
+                     'ㅋㅋㅋㅋㅋ']]
 
-O_SHAPE_TEMPLATE = [['.....',
-                     '.....',
-                     '.OO..',
-                     '.OO..',
-                     '.....']]
+O_SHAPE_TEMPLATE = [['ㅋㅋㅋㅋㅋ',
+                     'ㅋㅋㅋㅋㅋ',
+                     'ㅋ00ㅋㅋ',
+                     'ㅋ00ㅋㅋ',
+                     'ㅋㅋㅋㅋㅋ']]
 
-J_SHAPE_TEMPLATE = [['.....',
-                     '.O...',
-                     '.OOO.',
-                     '.....',
-                     '.....'],
-                    ['.....',
-                     '..OO.',
-                     '..O..',
-                     '..O..',
-                     '.....'],
-                    ['.....',
-                     '.....',
-                     '.OOO.',
-                     '...O.',
-                     '.....'],
-                    ['.....',
-                     '..O..',
-                     '..O..',
-                     '.OO..',
-                     '.....']]
+J_SHAPE_TEMPLATE = [['ㅋㅋㅋㅋㅋ',
+                     'ㅋ0ㅋㅋㅋ',
+                     'ㅋ000ㅋ',
+                     'ㅋㅋㅋㅋㅋ',
+                     'ㅋㅋㅋㅋㅋ'],
+                    ['ㅋㅋㅋㅋㅋ',
+                     'ㅋㅋ00ㅋ',
+                     'ㅋㅋ0ㅋㅋ',
+                     'ㅋㅋ0ㅋㅋ',
+                     'ㅋㅋㅋㅋㅋ'],
+                    ['ㅋㅋㅋㅋㅋ',
+                     'ㅋㅋㅋㅋㅋ',
+                     'ㅋ000ㅋ',
+                     'ㅋㅋㅋ0ㅋ',
+                     'ㅋㅋㅋㅋㅋ'],
+                    ['ㅋㅋㅋㅋㅋ',
+                     'ㅋㅋ0ㅋㅋ',
+                     'ㅋㅋ0ㅋㅋ',
+                     'ㅋ00ㅋㅋ',
+                     'ㅋㅋㅋㅋㅋ']]
 
-L_SHAPE_TEMPLATE = [['.....',
-                     '...O.',
-                     '.OOO.',
-                     '.....',
-                     '.....'],
-                    ['.....',
-                     '..O..',
-                     '..O..',
-                     '..OO.',
-                     '.....'],
-                    ['.....',
-                     '.....',
-                     '.OOO.',
-                     '.O...',
-                     '.....'],
-                    ['.....',
-                     '.OO..',
-                     '..O..',
-                     '..O..',
-                     '.....']]
+L_SHAPE_TEMPLATE = [['ㅋㅋㅋㅋㅋ',
+                     'ㅋㅋㅋ0ㅋ',
+                     'ㅋ000ㅋ',
+                     'ㅋㅋㅋㅋㅋ',
+                     'ㅋㅋㅋㅋㅋ'],
+                    ['ㅋㅋㅋㅋㅋ',
+                     'ㅋㅋ0ㅋㅋ',
+                     'ㅋㅋ0ㅋㅋ',
+                     'ㅋㅋ00ㅋ',
+                     'ㅋㅋㅋㅋㅋ'],
+                    ['ㅋㅋㅋㅋㅋ',
+                     'ㅋㅋㅋㅋㅋ',
+                     'ㅋ000ㅋ',
+                     'ㅋ0ㅋㅋㅋ',
+                     'ㅋㅋㅋㅋㅋ'],
+                    ['ㅋㅋㅋㅋㅋ',
+                     'ㅋ00ㅋㅋ',
+                     'ㅋㅋ0ㅋㅋ',
+                     'ㅋㅋ0ㅋㅋ',
+                     'ㅋㅋㅋㅋㅋ']]
 
-T_SHAPE_TEMPLATE = [['.....',
-                     '..O..',
-                     '.OOO.',
-                     '.....',
-                     '.....'],
-                    ['.....',
-                     '..O..',
-                     '..OO.',
-                     '..O..',
-                     '.....'],
-                    ['.....',
-                     '.....',
-                     '.OOO.',
-                     '..O..',
-                     '.....'],
-                    ['.....',
-                     '..O..',
-                     '.OO..',
-                     '..O..',
-                     '.....']]
+T_SHAPE_TEMPLATE = [['ㅋㅋㅋㅋㅋ',
+                     'ㅋㅋ0ㅋㅋ',
+                     'ㅋ000ㅋ',
+                     'ㅋㅋㅋㅋㅋ',
+                     'ㅋㅋㅋㅋㅋ'],
+                    ['ㅋㅋㅋㅋㅋ',
+                     'ㅋㅋ0ㅋㅋ',
+                     'ㅋㅋ00ㅋ',
+                     'ㅋㅋ0ㅋㅋ',
+                     'ㅋㅋㅋㅋㅋ'],
+                    ['ㅋㅋㅋㅋㅋ',
+                     'ㅋㅋㅋㅋㅋ',
+                     'ㅋ000ㅋ',
+                     'ㅋㅋ0ㅋㅋ',
+                     'ㅋㅋㅋㅋㅋ'],
+                    ['ㅋㅋㅋㅋㅋ',
+                     'ㅋㅋ0ㅋㅋ',
+                     'ㅋ00ㅋㅋ',
+                     'ㅋㅋ0ㅋㅋ',
+                     'ㅋㅋㅋㅋㅋ']]
 
 PIECES = {'S': S_SHAPE_TEMPLATE,
           'Z': Z_SHAPE_TEMPLATE,
@@ -154,148 +153,130 @@ PIECES = {'S': S_SHAPE_TEMPLATE,
           'T': T_SHAPE_TEMPLATE}
 
 
-#
-def main():
-    # noinspection PyGlobalUndefined
-    global FPSCLOCK, DISPLAYSURF, BASICFONT, BIGFONT
+def aa():
+    global 프레임시간, 화면, 기본글자, 큰글자
     pygame.init()
-    FPSCLOCK = pygame.time.Clock()
-    DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
-    BASICFONT = pygame.font.Font(None, 18)
-    BIGFONT = pygame.font.Font(None, 100)
-    pygame.display.set_caption('Tetris')
+    프레임시간 = pygame.time.Clock()
+    화면 = pygame.display.set_mode((상자크기, 높이))
+    기본글자 = pygame.font.Font(None, 30)
+    큰글자 = pygame.font.Font(None, 200)
+    pygame.display.set_caption('game')
 
-    showTextScreen('Tetris')
     while True:
-        runGame()
-        showTextScreen('Game Over')
+        bb()
 
 
-def runGame():
-    global i
-    board = getBlankBoard()
+def bb():
+    global 시간
+    board = kk()
     lastMoveDownTime = time.time()
     lastMoveSidewaysTime = time.time()
     lastFallTime = time.time()
     movingDown = False
-    movingLeft = False
+    왼쪽으로 = False
     movingRight = False
-    score = 0
-    level, fallFreq = calculateLevelAndFallFreq(score)
+    r = 0
+    level, fall = hh(r)
 
-    fallingPiece = getNewPiece()
-    nextPiece = getNewPiece()
+    떨어지는조각 = ii()
+    다음조각 = ii()
 
     while True:
-        if fallingPiece is None:
-            fallingPiece = nextPiece
-            nextPiece = getNewPiece()
+        if 떨어지는조각 is None:
+            떨어지는조각 = 다음조각
+            다음조각 = ii()
             lastFallTime = time.time()
 
-            if not isValidPosition(board, fallingPiece):
+            if not nn(board, 떨어지는조각):
                 return
 
-        checkForQuit()
         for event in pygame.event.get():
             if event.type == KEYUP:
                 if event.key == K_p:
-                    DISPLAYSURF.fill(BGCOLOR)
-                    showTextScreen('Paused')
+                    화면.fill(BGCOLOR)
                     lastFallTime = time.time()
                     lastMoveDownTime = time.time()
                     lastMoveSidewaysTime = time.time()
-                elif event.key == K_LEFT or event.key == K_a:
-                    movingLeft = False
-                elif event.key == K_RIGHT or event.key == K_d:
+                elif event.key == K_LEFT:
+                    왼쪽으로 = False
+                elif event.key == K_RIGHT:
                     movingRight = False
-                elif event.key == K_DOWN or event.key == K_s:
+                elif event.key == K_DOWN:
                     movingDown = False
 
             elif event.type == KEYDOWN:
-                if (event.key == K_LEFT or event.key == K_a) and isValidPosition(board, fallingPiece, adjX=-1):
-                    fallingPiece['x'] -= 1
-                    movingLeft = True
+                if (event.key == K_LEFT or event.key == K_a) and nn(board, 떨어지는조각, adjX=-1):
+                    떨어지는조각['x'] -= 1
+                    왼쪽으로 = True
                     movingRight = False
                     lastMoveSidewaysTime = time.time()
 
-                elif (event.key == K_RIGHT or event.key == K_d) and isValidPosition(board, fallingPiece, adjX=1):
-                    fallingPiece['x'] += 1
+                elif (event.key == K_RIGHT or event.key == K_d) and nn(board, 떨어지는조각, adjX=1):
+                    떨어지는조각['x'] += 1
                     movingRight = True
-                    movingLeft = False
+                    왼쪽으로 = False
                     lastMoveSidewaysTime = time.time()
 
-                elif event.key == K_UP or event.key == K_w:
-                    fallingPiece['rotation'] = (fallingPiece['rotation'] + 1) % len(PIECES[fallingPiece['shape']])
-                    if not isValidPosition(board, fallingPiece):
-                        fallingPiece['rotation'] = (fallingPiece['rotation'] - 1) % len(PIECES[fallingPiece['shape']])
+                elif event.key == K_UP:
+                    떨어지는조각['rotation'] = (떨어지는조각['rotation'] + 1) % len(PIECES[떨어지는조각['shape']])
+                    if not nn(board, 떨어지는조각):
+                        떨어지는조각['rotation'] = (떨어지는조각['rotation'] - 1) % len(PIECES[떨어지는조각['shape']])
                 elif event.key == K_q:
-                    fallingPiece['rotation'] = (fallingPiece['rotation'] - 1) % len(PIECES[fallingPiece['shape']])
-                    if not isValidPosition(board, fallingPiece):
-                        fallingPiece['rotation'] = (fallingPiece['rotation'] + 1) % len(PIECES[fallingPiece['shape']])
+                    떨어지는조각['rotation'] = (떨어지는조각['rotation'] - 1) % len(PIECES[떨어지는조각['shape']])
+                    if not nn(board, 떨어지는조각):
+                        떨어지는조각['rotation'] = (떨어지는조각['rotation'] + 1) % len(PIECES[떨어지는조각['shape']])
 
-                elif event.key == K_DOWN or event.key == K_s:
+                elif event.key == K_DOWN:
                     movingDown = True
-                    if isValidPosition(board, fallingPiece, adjY=1):
-                        fallingPiece['y'] += 1
+                    if nn(board, 떨어지는조각, adjY=1):
+                        떨어지는조각['y'] += 1
                     lastMoveDownTime = time.time()
 
                 elif event.key == K_SPACE:
                     movingDown = False
-                    movingLeft = False
+                    왼쪽으로 = False
                     movingRight = False
-                    for i in range(1, BOARDHEIGHT):
-                        if not isValidPosition(board, fallingPiece, adjY=i):
+                    for 시간 in range(1, 게임상자세로):
+                        if not nn(board, 떨어지는조각, adjY=시간):
                             break
-                    fallingPiece['y'] += i - 1
+                    떨어지는조각['y'] += 시간 - 1
 
-        if (movingLeft or movingRight) and time.time() - lastMoveSidewaysTime > MOVESIDEWAYSFREQ:
-            if movingLeft and isValidPosition(board, fallingPiece, adjX=-1):
-                fallingPiece['x'] -= 1
-            elif movingRight and isValidPosition(board, fallingPiece, adjX=1):
-                fallingPiece['x'] += 1
+        if (왼쪽으로 or movingRight) and time.time() - lastMoveSidewaysTime > MOVESIDEWAYSFREQ:
+            if 왼쪽으로 and nn(board, 떨어지는조각, adjX=-1):
+                떨어지는조각['x'] -= 1
+            elif movingRight and nn(board, 떨어지는조각, adjX=1):
+                떨어지는조각['x'] += 1
             lastMoveSidewaysTime = time.time()
 
-        if movingDown and time.time() - lastMoveDownTime > MOVEDOWNFREQ and isValidPosition(board, fallingPiece,
-                                                                                            adjY=1):
-            fallingPiece['y'] += 1
+        if movingDown and time.time() - lastMoveDownTime > MOVEDOWNFREQ and nn(board, 떨어지는조각, adjY=1):
+            떨어지는조각['y'] += 1
             lastMoveDownTime = time.time()
 
-        if time.time() - lastFallTime > fallFreq:
-            if not isValidPosition(board, fallingPiece, adjY=1):
-                addToBoard(board, fallingPiece)
-                score += removeCompleteLines(board)
-                level, fallFreq = calculateLevelAndFallFreq(score)
-                fallingPiece = None
+        if time.time() - lastFallTime > fall:
+            if not nn(board, 떨어지는조각, adjY=1):
+                jj(board, 떨어지는조각)
+                r += oo(board)
+                level, fall = hh(r)
+                떨어지는조각 = None
             else:
-                fallingPiece['y'] += 1
+                떨어지는조각['y'] += 1
                 lastFallTime = time.time()
 
-        DISPLAYSURF.fill(BGCOLOR)
-        drawBoard(board)
-        drawNextPiece(nextPiece)
-        if fallingPiece is not None:
-            drawPiece(fallingPiece)
-
+        화면.fill(BGCOLOR)
+        rr(board)
+        tt(다음조각)
+        if 떨어지는조각 is not None:
+            ss(떨어지는조각)
         pygame.display.update()
-        FPSCLOCK.tick(FPS)
+        프레임시간.tick(FPS)
 
 
-def makeTextObjs(text, font, color):
-    """
-
-    :rtype: object
-    """
-    surf = font.render(text, True, color)
-    return surf, surf.get_rect()
-
-
-def terminate():
+def dd():
     pygame.quit()
     sys.exit()
 
 
-def checkForKeyPress():
-    checkForQuit()
+def ee():
 
     for event in pygame.event.get([KEYDOWN, KEYUP]):
         if event.type == KEYDOWN:
@@ -303,146 +284,131 @@ def checkForKeyPress():
         return event.key
     return None
 
-
-def showTextScreen(text):
-    titleSurf, titleRect = makeTextObjs(text, BIGFONT, TEXTSHADOWCOLOR)
-    titleRect.center = (int(WINDOWWIDTH / 2), int(WINDOWHEIGHT / 2))
-    DISPLAYSURF.blit(titleSurf, titleRect)
-
-    titleSurf, titleRect = makeTextObjs(text, BIGFONT, TEXTCOLOR)
-    titleRect.center = (int(WINDOWWIDTH / 2) - 3, int(WINDOWHEIGHT / 2) - 3)
-    DISPLAYSURF.blit(titleSurf, titleRect)
-
-    pressKeySurf, pressKeyRect = makeTextObjs('Press a key to play.', BASICFONT, TEXTCOLOR)
-    pressKeyRect.center = (int(WINDOWWIDTH / 2), int(WINDOWHEIGHT / 2) + 100)
-    DISPLAYSURF.blit(pressKeySurf, pressKeyRect)
-
-    while checkForKeyPress() is None:
+    while ee() is None:
         pygame.display.update()
-        FPSCLOCK.tick()
+        프레임시간.tick()
 
 
-def checkForQuit():
+def gg():
     for _ in pygame.event.get(QUIT):
-        terminate()
+        dd()
     for event in pygame.event.get(KEYUP):
         if event.key == K_ESCAPE:
-            terminate()
+            dd()
         pygame.event.post(event)
 
 
-def calculateLevelAndFallFreq(score):
-    level = int(score / 10) + 1
+def hh(r):
+    level = int(r / 10) + 1
     fallFreq = 0.27 - (level * 0.02)
     return level, fallFreq
 
 
-def getNewPiece():
+def ii():
     shape = random.choice(list(PIECES.keys()))
     newPiece = {'shape': shape,
                 'rotation': random.randint(0, len(PIECES[shape]) - 1),
-                'x': int(BOARDWIDTH / 2) - int(TEMPLATEWIDTH / 2),
+                'x': int(게임상자가로 / 2) - int(TEMPLATEWIDTH / 2),
                 'y': -2,
                 'color': random.randint(0, len(COLORS) - 1)}
     return newPiece
 
 
-def addToBoard(board, piece):
+def jj(board, piece):
     for x in range(TEMPLATEWIDTH):
         for y in range(TEMPLATEHEIGHT):
             if PIECES[piece['shape']][piece['rotation']][y][x] != BLANK:
                 board[x + piece['x']][y + piece['y']] = piece['color']
 
 
-def getBlankBoard():
+def kk():
     board = []
-    for I in range(BOARDWIDTH):
-        board.append([BLANK] * BOARDHEIGHT)
+    for ㅈ in range(게임상자가로):
+        board.append([BLANK] * 게임상자세로)
     return board
 
 
-def isOnBoard(x, y):
-    return 0 <= x < BOARDWIDTH and y < BOARDHEIGHT
+def ll(x, y):
+    return 0 <= x < 게임상자가로 and y < 게임상자세로
 
 
-def isValidPosition(board, piece, adjX=0, adjY=0):
+def nn(board, piece, adjX=0, adjY=0):
     for x in range(TEMPLATEWIDTH):
         for y in range(TEMPLATEHEIGHT):
             isAboveBoard = y + piece['y'] + adjY < 0
             if isAboveBoard or PIECES[piece['shape']][piece['rotation']][y][x] == BLANK:
                 continue
-            if not isOnBoard(x + piece['x'] + adjX, y + piece['y'] + adjY):
+            if not ll(x + piece['x'] + adjX, y + piece['y'] + adjY):
                 return False
             if board[x + piece['x'] + adjX][y + piece['y'] + adjY] != BLANK:
                 return False
     return True
 
 
-def isCompleteLine(board, y):
-    for x in range(BOARDWIDTH):
-        if board[x][y] == BLANK:
+def mm(안돼, y):
+    for x in range(게임상자가로):
+        if 안돼[x][y] == BLANK:
             return False
     return True
 
 
-def removeCompleteLines(board):
-    numLinesRemoved = 0
-    y = BOARDHEIGHT - 1
+def oo(판):
+    가로줄완성 = 0
+    y = 게임상자세로 - 1
     while y >= 0:
-        if isCompleteLine(board, y):
-            for pullDownY in range(y, 0, -1):
-                for x in range(BOARDWIDTH):
-                    board[x][pullDownY] = board[x][pullDownY - 1]
-            for x in range(BOARDWIDTH):
-                board[x][0] = BLANK
-            numLinesRemoved += 1
+        if mm(판, y):
+            for 하강 in range(y, 0, -1):
+                for 좌우 in range(게임상자가로):
+                    판[좌우][하강] = 판[좌우][하강 - 1]
+            for 좌우 in range(게임상자가로):
+                판[좌우][0] = BLANK
+            가로줄완성 += 1
         else:
             y -= 1
-    return numLinesRemoved
+    return 가로줄완성
 
 
-def convertToPixelCoords(boxx, boxy):
-    return (XMARGIN + (boxx * BOXSIZE)), (TOPMARGIN + (boxy * BOXSIZE))
+def pp(상자x, 상자y):
+    return (XMARGIN + (상자x * 게임상자)), (TOPMARGIN + (상자y * 게임상자))
 
 
-# noinspection SpellCheckingInspection
-def drawBox(boxx, boxy, color, pixelx=None, pixely=None):
+def qq(boxx, boxy, color, pixelx=None, pixely=None):
     if color == BLANK:
         return
     if pixelx is None and pixely is None:
-        pixelx, pixely = convertToPixelCoords(boxx, boxy)
-    pygame.draw.rect(DISPLAYSURF, COLORS[color], (pixelx + 1, pixely + 1, BOXSIZE - 1, BOXSIZE - 1))
-    pygame.draw.rect(DISPLAYSURF, LIGHTCOLORS[color], (pixelx + 1, pixely + 1, BOXSIZE - 4, BOXSIZE - 4))
+        pixelx, pixely = pp(boxx, boxy)
+    pygame.draw.rect(화면, COLORS[color], (pixelx + 1, pixely + 1, 게임상자 - 1, 게임상자 - 1))
+    pygame.draw.rect(화면, LIGHTCOLORS[color], (pixelx + 1, pixely + 1, 게임상자 - 4, 게임상자 - 4))
 
 
-def drawBoard(board):
-    pygame.draw.rect(DISPLAYSURF, BORDERCOLOR,
-                     (XMARGIN - 3, TOPMARGIN - 7, (BOARDWIDTH * BOXSIZE) + 8, (BOARDHEIGHT * BOXSIZE) + 8), 5)
+def rr(board):
+    pygame.draw.rect(화면, BORDERCOLOR,
+                     (XMARGIN - 3, TOPMARGIN - 7, (게임상자가로 * 게임상자) + 8, (게임상자세로 * 게임상자) + 8), 5)
 
-    pygame.draw.rect(DISPLAYSURF, BGCOLOR, (XMARGIN, TOPMARGIN, BOXSIZE * BOARDWIDTH, BOXSIZE * BOARDHEIGHT))
-    for x in range(BOARDWIDTH):
-        for y in range(BOARDHEIGHT):
-            drawBox(x, y, board[x][y])
+    pygame.draw.rect(화면, BGCOLOR, (XMARGIN, TOPMARGIN, 게임상자 * 게임상자가로, 게임상자 * 게임상자세로))
+    for x in range(게임상자가로):
+        for y in range(게임상자세로):
+            qq(x, y, board[x][y])
 
 
-def drawPiece(piece, pixelx=None, pixely=None):
+def ss(piece, pixelx=None, pixely=None):
     shapeToDraw = PIECES[piece['shape']][piece['rotation']]
     if pixelx is None and pixely is None:
-        pixelx, pixely = convertToPixelCoords(piece['x'], piece['y'])
+        pixelx, pixely = pp(piece['x'], piece['y'])
 
     for x in range(TEMPLATEWIDTH):
         for y in range(TEMPLATEHEIGHT):
             if shapeToDraw[y][x] != BLANK:
-                drawBox(None, None, piece['color'], pixelx + (x * BOXSIZE), pixely + (y * BOXSIZE))
+                qq(None, None, piece['color'], pixelx + (x * 게임상자), pixely + (y * 게임상자))
 
 
-def drawNextPiece(piece):
-    nextSurf = BASICFONT.render('Next:', True, TEXTCOLOR)
+def tt(piece):
+    nextSurf = 기본글자.render('Next:', True, TEXTCOLOR)
     nextRect = nextSurf.get_rect()
-    nextRect.topleft = (WINDOWWIDTH - 120, 80)
-    DISPLAYSURF.blit(nextSurf, nextRect)
-    drawPiece(piece, pixelx=WINDOWWIDTH - 120, pixely=100)
+    nextRect.topleft = (상자크기 - 120, 80)
+    화면.blit(nextSurf, nextRect)
+    ss(piece, pixelx=상자크기 - 220, pixely=300)
 
 
 if __name__ == '__main__':
-    main()
+    aa()
